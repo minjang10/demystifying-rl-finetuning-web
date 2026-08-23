@@ -9,33 +9,56 @@
 </head>
 <body>
 
-<header>
-  <h1>Demystifying Reinforcement Learning Post-Training of Language Models</h1>
-  <p class="authors">
-    Donovan Clay<sup>1,*</sup>, Saket Gollapudi<sup>1,*</sup>, Sankar Harilal<sup>1,*</sup>,
-    Min Jang<sup>1,*</sup>, Jacob Morrison<sup>1,2</sup>, Sewoong Oh<sup>1</sup>, Natasha Jaques<sup>1</sup>
-  </p>
-  <p class="affil">
-    <sup>1</sup>University of Washington &nbsp; <sup>2</sup>Allen Institute for AI &nbsp;
-    <sup>*</sup>Equal contribution
-  </p>
-  <p class="affil">Under review at ACL Rolling Review</p>
-  <p class="meta">
-    <a href="paper.pdf">Paper (PDF)</a>
-    <a href="#">Code (coming soon)</a>
-  </p>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="kicker"><span class="kicker-dot"></span>Under review &middot; ACL Rolling Review</p>
+
+    <h1><span class="accent">Demystifying</span> Reinforcement Learning Post-Training of Language Models</h1>
+
+    <p class="deck">RL post-training is usually explained by its algorithm. We take the algorithm off the
+    table and vary the other three inputs &mdash; the base model, the reward, and the prompt
+    distribution &mdash; to show which one actually decides the outcome.</p>
+
+    <p class="authors">
+      <span>Donovan Clay<sup>1,&lowast;</sup></span>
+      <span>Saket Gollapudi<sup>1,&lowast;</sup></span>
+      <span>Sankar Harilal<sup>1,&lowast;</sup></span>
+      <span>Min Jang<sup>1,&lowast;</sup></span>
+      <span>Jacob Morrison<sup>1,2</sup></span>
+      <span>Sewoong Oh<sup>1</sup></span>
+      <span>Natasha Jaques<sup>1</sup></span>
+    </p>
+
+    <p class="affils">
+      <span><sup>1</sup>University of Washington</span>
+      <span><sup>2</sup>Allen Institute for AI</span>
+      <span><sup>&lowast;</sup>Equal contribution</span>
+    </p>
+
+    <p class="actions">
+      <a class="btn btn-primary" href="paper.pdf">Read the paper (PDF)</a>
+      <a class="btn btn-ghost" href="#" aria-disabled="true">Code &mdash; coming soon</a>
+    </p>
+  </div>
+
 </header>
 
 <h2>Abstract</h2>
 
-<p>Reinforcement learning (RL) post-training has emerged as a powerful framework for enhancing the capabilities of large language models (LLMs), enabling impressive reasoning, math, and coding capabilities. Yet for many researchers and practitioners, the principles behind classical RL remain a &ldquo;black box&rdquo;. In this work, we deconstruct the RL post-training algorithm, investigating each step to clarify what is actually happening beneath the surface. By isolating the mechanics of RL with Verifiable Rewards in a controlled and simplified environment, we examine how RL outcomes are shaped by the base model's prior distribution, the granularity of the reward signal, the diversity of the prompt distribution, and model scale.</p>
-
-<p>We use the entropy of the policy's output distribution as a lens to compare the distributions learned through pretraining, SFT, and RL post-training, revealing how each stage shapes model certainty. Our investigation sheds light on how these choices interact to affect post-training success. For example, we show that the effect of so-called &lsquo;spurious rewards&rsquo; depends on the prompt distribution used for post-training. We also provide insight into why the success of RL post-training depends on whether the base model already places sufficient probability mass on the desired behavior, linking it to the classical concept of exploration in RL. Ultimately, we provide this primer as a resource to those in the NLP community wishing to incorporate RL as a tool in their toolbox.</p>
+<p>Reinforcement learning (RL) post-training has emerged as a powerful framework for enhancing the capabilities of large language models (LLMs), enabling impressive reasoning, math, and coding capabilities. Yet for many researchers and practitioners, the principles behind classical RL remain a "black box". In this work, we deconstruct the RL post-training algorithm, investigating each step to clarify what is actually happening beneath the surface. By isolating the mechanics of RL with Verifiable Rewards in a controlled and simplified environment, we examine how RL outcomes are shaped by the base model’s prior distribution, the granularity of the reward signal, the diversity of the prompt distribution, and model scale. We use the entropy of the policy's output distribution as a lens to compare the distributions learned through pretraining, SFT, and RL post-training, revealing how each stage shapes model certainty. Our investigation sheds light on how these choices interact to affect post-training success. For example, we show that the effect of so-called `spurious rewards' depends on the prompt distribution used for post-training. We also provide insight into why the success of RL post-training depends on whether the base model already places sufficient probability mass on the desired behavior, linking it to the classical concept of exploration in RL. Ultimately, we provide this primer as a resource to those in the NLP community wishing to incorporate RL as a tool in their toolbox.</p>
 
 <figure class="wide">
   <img src="figures/fig1.png" alt="Diagram of the RLVR loop with base model, prompt dataset, and reward function as the three inputs we vary.">
   <figcaption><strong>Figure 1: Overview of the RL post-training process.</strong> Our experiments isolate the specific impact of the base distribution, the prompt distribution (<em>D</em>), and the reward function (<em>r</em>). We exclude algorithmic variation from our scope, deferring to the extensive existing research on RL algorithmic choices.</figcaption>
 </figure>
+
+<h2>Understanding RL post-training</h2>
+
+<p>Due to the large success of RL in LLM post-training, RL has emerged as the most useful post-training algorithm for NLP practitioners. However, recent works from the NLP community have shown a misunderstanding of classical RL concepts.</p>
+
+<p>For example, <a href="https://arxiv.org/abs/2506.10947?">Shao et al.</a> showed that using random rewards still shows performance gains on Qwen models. We show that this counterintuitive result is largely caused by an entropy shift in the models' probability distribution.</p>
+
+<p>Additionally, <a href="https://arxiv.org/abs/2504.13837">Yue et al.</a> showed that when comparing performance of the base model vs. the post-trained model using <i>pass@k</i>, by increasing <i>k</i> to be large enough, the gap in performance between the base and post-trained model is closed. This shows that the base model already had the capabilities &mdash; RLVR isn't learning new skills, but rather reweighting good responses from the pre-training distribution. However, classic RL practitioners will recognize this as the exploration/exploitation tradeoff. Because RLVR uses sparse rewards, in order for the model to receive any reward signal, the capability being trained must already exist in the pre-training distribution. We show that using dense rewards can overcome this phenomenon.</p>
 
 <h2>The setup</h2>
 
@@ -45,9 +68,9 @@
   U(&pi;<sub>&theta;</sub>) = E<sub>x&sim;D, y&sim;&pi;<sub>&theta;</sub></sub> [ (1/c)&thinsp;r(x, y) &minus; D<sub>KL</sub>(&pi;<sub>&theta;</sub> &#8214; &pi;<sub>ref</sub>) ]
 </div>
 
-<p>Three things go into that loop: a <strong>base model</strong>, a <strong>reward function</strong>, and a <strong>prompt dataset</strong>. Almost all the published work varies the fourth thing &mdash; the algorithm (PPO, GRPO, hyperparameters). We held the algorithm fixed and varied the other three instead.</p>
+<p>Three things go into that loop: a <strong>base model</strong>, a <strong>reward function</strong>, and a <strong>prompt dataset</strong>. Almost all the published work varies a fourth &mdash; the algorithm (PPO, GRPO, hyperparameters). In this work, we studied post-training behavior when varying the first three.</p>
 
-<p>Because the KL term anchors the policy to the base model, post-training is best understood as <em>redistributing probability mass inside the pretrained distribution</em>. That framing suggests the measurement: track the probability the model assigns to the behavior you want, and track the entropy of its output distribution, throughout training.</p>
+<p>Post-training is best understood as <em>redistributing probability mass inside the pretrained distribution</em>. That framing suggests the measurement: track the probability the model assigns to the behavior you want, and track the entropy of its output distribution, throughout training.</p>
 
 <h2>A sandbox where you can measure everything</h2>
 
@@ -89,8 +112,10 @@
 <p>So we replaced the binary reward with a dense one. For the quote task, negative Levenshtein distance to the target. For the math problem, a process reward model that gives partial credit for reaching any of five valid sub-steps of the solution.</p>
 
 <figure class="wide">
-  <img src="figures/fig2a.png" alt="Reward curves for Qwen3-1.7B on the movie quote task, sparse versus dense.">
-  <img src="figures/fig2b.png" alt="Reward curves for Qwen2.5-7B-Instruct on AIME, sparse versus dense.">
+  <div class="figrow">
+    <img src="figures/fig2a.png" alt="Reward curves for Qwen3-1.7B on the movie quote task, sparse versus dense.">
+    <img src="figures/fig2b.png" alt="Reward curves for Qwen2.5-7B-Instruct on AIME, sparse versus dense.">
+  </div>
   <figcaption>Sparse (dashed) vs. dense (solid) learning dynamics on the quote task and the AIME task. Dense rewards pull models out of the flat-line failure that sparse rewards leave them in.</figcaption>
 </figure>
 
@@ -145,13 +170,7 @@
 
 <h2>Citation</h2>
 
-<pre><code>@unpublished{clay2026demystifying,
-  title  = {Demystifying Reinforcement Learning Post-Training of Language Models},
-  author = {Clay, Donovan and Gollapudi, Saket and Harilal, Sankar and
-            Jang, Min and Morrison, Jacob and Oh, Sewoong and Jaques, Natasha},
-  note   = {Under review at ACL Rolling Review},
-  year   = {2026}
-}</code></pre>
+Coming soon on arxiv!
 
 <footer>
   <p>Under review through ACL Rolling Review. Figures are taken from the paper. Code will be released with the camera-ready version.</p>
