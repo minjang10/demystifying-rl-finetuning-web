@@ -11,7 +11,6 @@
 
 <header class="hero">
   <div class="hero-inner">
-    <p class="kicker"><span class="kicker-dot"></span>Under review &middot; ACL Rolling Review</p>
 
     <h1><span class="accent">Demystifying</span> Reinforcement Learning Post-Training of Language Models</h1>
 
@@ -54,15 +53,15 @@
 
 <h2>Understanding RL post-training</h2>
 
-<p>Due to the large success of RL in LLM post-training, RL has emerged as the most useful post-training algorithm for NLP practitioners. However, recent works from the NLP community have shown a misunderstanding of classical RL concepts.</p>
+<p>Due to the large success of RL in LLM post-training, RL has emerged as a powerful technique for enhancing LLM capabilities, used widely across industry and academia. However, recent works in the literature may contribute to misconceptions of how the mechanics of RL post-training actually function.</p>
 
-<p>For example, <a href="https://arxiv.org/abs/2506.10947?">Shao et al.</a> showed that using random rewards still shows performance gains on Qwen models. We show that this counterintuitive result is largely caused by an entropy shift in the models' probability distribution.</p>
+<p>For example, <a href="https://arxiv.org/abs/2506.10947?">Shao et al.</a> showed that using random rewards still shows performance gains on Qwen models. We show that this is an isolated phenomenon that is not only restricted to certain models, but to using certain narrow prompt datasets for post-training. When using a broad prompt, training on random rewards makes any answer equally valid, increasing policy entropy and destroying capabilities.</p>
 
-<p>Additionally, <a href="https://arxiv.org/abs/2504.13837">Yue et al.</a> showed that when comparing performance of the base model vs. the post-trained model using <i>pass@k</i>, by increasing <i>k</i> to be large enough, the gap in performance between the base and post-trained model is closed. This shows that the base model already had the capabilities &mdash; RLVR isn't learning new skills, but rather reweighting good responses from the pre-training distribution. However, classic RL practitioners will recognize this as the exploration/exploitation tradeoff. Because RLVR uses sparse rewards, in order for the model to receive any reward signal, the capability being trained must already exist in the pre-training distribution. We show that using dense rewards can overcome this phenomenon.</p>
+<p>Additionally, <a href="https://arxiv.org/abs/2504.13837">Yue et al.</a> argued that post-training merely increases the likelihood of sampling correct responses that were already within the base model's pass@k distribution, for sufficiently large k. In other words, the base model already had the capabilities; RLVR isn't learning new skills, but rather reweighting good responses from the pre-training distribution. Classic RL practitioners will recognize this as the problem of exploring effectively. Because RLVR typically uses sparse rewards, in order for the model to receive a reward signal, the capability being trained must have some probability of being sampled by the base model's distribution. However, this is only due to the sparseness of the rewards! We show that using dense rewards can overcome this phenomenon, and that RL can train the model to exhibit new capabilities that had negligible probability in the base model's pass@k.</p>
 
 <h2>The setup</h2>
 
-<p>Strip away the engineering and RL with verifiable rewards (RLVR) is a short loop: sample a prompt, sample a response from the model, score the response with a verifier, nudge the weights toward higher-scoring responses, repeat. A KL penalty keeps the policy near the model you started from.</p>
+<p>Strip away the engineering and RL with verifiable rewards (RLVR) is a short loop: sample a prompt, sample a response from the model, score the response with a verifier, nudge the weights toward higher-scoring responses, repeat. A KL penalty keeps the policy near the base model you started from.</p>
 
 <div class="eq">
   U(&pi;<sub>&theta;</sub>) = E<sub>x&sim;D, y&sim;&pi;<sub>&theta;</sub></sub> [ (1/c)&thinsp;r(x, y) &minus; D<sub>KL</sub>(&pi;<sub>&theta;</sub> &#8214; &pi;<sub>ref</sub>) ]
@@ -171,8 +170,7 @@
 <h2>Citation</h2>
 
 <pre>
-  <code>
-    @misc{clay2026demystifyingreinforcementlearningposttraining,
+  <code>@misc{clay2026demystifyingreinforcementlearningposttraining,
         title={Demystifying Reinforcement Learning Post-Training of Language Models}, 
         author={Donovan Clay and Saket Gollapudi and Sankar Harilal and Min Jang and Jacob Morrison and Sewoong Oh and Natasha Jaques},
         year={2026},
@@ -180,13 +178,9 @@
         archivePrefix={arXiv},
         primaryClass={cs.LG},
         url={https://arxiv.org/abs/2608.24949}, 
-    }
-  </code>
+    }</code>
 </pre>
 
-<footer>
-  <p>Under review through ACL Rolling Review. Figures are taken from the paper. Code will be released with the camera-ready version.</p>
-</footer>
 
 </body>
 </html>
