@@ -315,3 +315,118 @@ footer {
   margin-top: 4rem;
   padding-top: 1.5rem;
 }
+
+/* ---------- heatmap table ---------- */
+
+table.heatmap {
+  border-collapse: separate;
+  border-spacing: 0.5rem 2px;
+  font-family: var(--sans);
+  margin: 1.5rem 0 0.5rem -0.5rem;
+  min-width: 31rem;
+  width: calc(100% + 1rem);
+  table-layout: fixed;
+}
+
+table.heatmap caption.hm-key {
+  caption-side: top;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  padding: 0 0 0.75rem 0.5rem;
+  text-align: left;
+}
+
+.hm-demo {
+  display: inline-flex;
+  gap: 2px;
+  transform: translateY(1px);
+}
+
+.hm-demo .sw {
+  border-radius: 2px;
+  display: inline-block;
+  height: 0.68rem;
+  width: 0.9rem;
+}
+
+table.heatmap th {
+  border: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: normal;
+  letter-spacing: 0.06em;
+  padding: 0 0 0.35rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+table.heatmap thead th:first-child {
+  text-align: left;
+}
+
+table.heatmap th[scope="row"] {
+  color: var(--fg);
+  font-family: Charter, Georgia, "Times New Roman", serif;
+  font-size: 0.92rem;
+  letter-spacing: 0;
+  padding: 0 0.4rem 0 0;
+  text-align: left;
+  text-transform: none;
+  white-space: nowrap;
+  width: 7.5rem;
+}
+
+table.heatmap td {
+  border: 0;
+  padding: 0;
+}
+
+table.heatmap .cell {
+  display: flex;
+  gap: 2px;
+}
+
+table.heatmap .sw {
+  color: #3a1c08;
+  flex: 1;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  padding: 0.5rem 0.25rem;
+  text-align: center;
+}
+
+table.heatmap .cell .sw:first-child {
+  border-radius: 3px 0 0 3px;
+}
+
+table.heatmap .cell .sw:last-child {
+  border-radius: 0 3px 3px 0;
+  font-weight: 600;
+}
+
+/* sequential ramp: one hue, light -> dark */
+.s0 { background: #fbefe3; }
+.s1 { background: #f9dcc2; }
+.s2 { background: #f5c396; }
+.s3 { background: #efa76d; }
+.s4 { background: #e08544; }
+.s5 { background: #a83f0d; color: #fff; }
+
+.hm-scale {
+  align-items: center;
+  color: var(--muted);
+  display: flex;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  gap: 0.4rem;
+  margin: 0 0 0.35rem;
+  max-width: 18rem;
+}
+
+.hm-scale .ramp {
+  background: linear-gradient(90deg, #fbefe3, #f9dcc2, #f5c396, #efa76d, #e08544, #a83f0d);
+  border-radius: 2px;
+  flex: 1;
+  height: 0.45rem;
+}

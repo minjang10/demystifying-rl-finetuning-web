@@ -86,23 +86,25 @@
 <p>Train all three variants with a standard binary reward and the pattern is stark.</p>
 
 <div class="table-wrap">
-<table>
+<table class="heatmap">
+  <caption class="hm-key">Each cell reads <span class="hm-demo"><i class="sw s1"></i><i class="sw s4"></i></span> &mdash; probability <em>before</em> RL, then <em>after</em>.</caption>
   <thead>
-    <tr><th>Model</th><th>SFT+</th><th>Base</th><th>SFT&minus;</th></tr>
+    <tr><th scope="col">Model</th><th scope="col">SFT+</th><th scope="col">Base</th><th scope="col">SFT&minus;</th></tr>
   </thead>
   <tbody>
-    <tr><td>Qwen3-8B</td><td>43.12% &rarr; 100%</td><td>0.00% &rarr; 0.00%</td><td>0.00% &rarr; 0.00%</td></tr>
-    <tr><td>Qwen2-7B</td><td>28.75% &rarr; 99.6%</td><td>3.52% &rarr; 99.99%</td><td>0.00% &rarr; 0.00%</td></tr>
-    <tr><td>Qwen3-1.7B</td><td>14.04% &rarr; 98.7%</td><td>0.48% &rarr; 10.0%</td><td>0.00% &rarr; 0.00%</td></tr>
-    <tr><td>Qwen2-1.5B</td><td>7.96% &rarr; 92.5%</td><td>0.31% &rarr; 0.71%</td><td>0.00% &rarr; 0.00%</td></tr>
+    <tr><th scope="row">Qwen3-8B</th><td><span class="cell" title="Qwen3-8B, SFT+: 43.12% before RL, 100% after RL"><span class="sw s3">43.12%</span><span class="sw s5">100%</span></span></td><td><span class="cell" title="Qwen3-8B, Base: 0.00% before RL, 0.00% after RL"><span class="sw s0">0.00%</span><span class="sw s0">0.00%</span></span></td><td><span class="cell" title="Qwen3-8B, SFT-: 0.00% before RL, 0.00% after RL"><span class="sw s0">0.00%</span><span class="sw s0">0.00%</span></span></td></tr>
+    <tr><th scope="row">Qwen2-7B</th><td><span class="cell" title="Qwen2-7B, SFT+: 28.75% before RL, 99.6% after RL"><span class="sw s3">28.75%</span><span class="sw s5">99.6%</span></span></td><td><span class="cell" title="Qwen2-7B, Base: 3.52% before RL, 99.99% after RL"><span class="sw s1">3.52%</span><span class="sw s5">99.99%</span></span></td><td><span class="cell" title="Qwen2-7B, SFT-: 0.00% before RL, 0.00% after RL"><span class="sw s0">0.00%</span><span class="sw s0">0.00%</span></span></td></tr>
+    <tr><th scope="row">Qwen3-1.7B</th><td><span class="cell" title="Qwen3-1.7B, SFT+: 14.04% before RL, 98.7% after RL"><span class="sw s2">14.04%</span><span class="sw s5">98.7%</span></span></td><td><span class="cell" title="Qwen3-1.7B, Base: 0.48% before RL, 10.0% after RL"><span class="sw s0">0.48%</span><span class="sw s2">10.0%</span></span></td><td><span class="cell" title="Qwen3-1.7B, SFT-: 0.00% before RL, 0.00% after RL"><span class="sw s0">0.00%</span><span class="sw s0">0.00%</span></span></td></tr>
+    <tr><th scope="row">Qwen2-1.5B</th><td><span class="cell" title="Qwen2-1.5B, SFT+: 7.96% before RL, 92.5% after RL"><span class="sw s1">7.96%</span><span class="sw s5">92.5%</span></span></td><td><span class="cell" title="Qwen2-1.5B, Base: 0.31% before RL, 0.71% after RL"><span class="sw s0">0.31%</span><span class="sw s0">0.71%</span></span></td><td><span class="cell" title="Qwen2-1.5B, SFT-: 0.00% before RL, 0.00% after RL"><span class="sw s0">0.00%</span><span class="sw s0">0.00%</span></span></td></tr>
   </tbody>
 </table>
+<div class="hm-scale"><span>0%</span><i class="ramp"></i><span>100%</span></div>
 </div>
-<p class="caption">Probability of producing the target quote, before &rarr; after sparse-reward RL (10,000 samples).</p>
+<p class="caption">Probability of producing the target quote under sparse-reward RL (10,000 samples).</p>
 
 <p>Models that already had the behavior converge quickly. Models that did not never get a single positive reward, so there is no gradient and nothing happens. Qwen2-7B, sitting at 3.5%, took a 40-step plateau before it took off; Qwen3-1.7B at 0.5% never did. There is a threshold, and it is a threshold on <em>coverage</em> &mdash; on whether the target has enough initial mass to ever be sampled.</p>
 
-<p>The same thing shows up on the AIME problem. The base Qwen2.5-7B-Instruct stalls near 10% under sparse rewards while the SFT+ version reaches ~86%. This is the "coverage principle" from the theory literature, showing up cleanly in practice: with sparse rewards, RL selects among behaviors the base model already has.</p>
+<p>The same thing shows up on the AIME problem. The base Qwen2.5-7B-Instruct stalls near 10% under sparse rewards while the SFT+ version reaches ~86%. This is the <a href="https://arxiv.org/abs/2510.15020">"coverage principle"</a> from the theory literature, showing up cleanly in practice: with sparse rewards, RL selects among behaviors the base model already has.</p>
 
 <h2>Result 2: dense rewards break that ceiling</h2>
 
@@ -115,10 +117,10 @@
     <img src="figures/fig2a.png" alt="Reward curves for Qwen3-1.7B on the movie quote task, sparse versus dense.">
     <img src="figures/fig2b.png" alt="Reward curves for Qwen2.5-7B-Instruct on AIME, sparse versus dense.">
   </div>
-  <figcaption>Sparse (dashed) vs. dense (solid) learning dynamics on the quote task and the AIME task. Dense rewards pull models out of the flat-line failure that sparse rewards leave them in.</figcaption>
+  <figcaption>Sparse (dashed) vs. dense (solid) learning dynamics on the quote task and the AIME task. Dense rewards pull models out of the flat-line failure that sparse rewards leave them in (see e.g. the base model performance on the reasoning problem).</figcaption>
 </figure>
 
-<p>Qwen3-1.7B &mdash; the model with a 0.5% prior that failed completely under sparse rewards &mdash; climbs to nearly 50% exact match with the dense signal. On AIME, the base model goes from flat-lining around 10% to over 90%, slightly beating the SFT+ model that was handed the ground-truth derivation.</p>
+<p>Qwen3-1.7B &mdash; the model with a 0.5% prior that failed completely under sparse rewards &mdash; climbs to nearly 50% exact match with the dense signal. On AIME, the base model goes from flat-lining around 10% with sparse rewards to achieving over 90% with dense rewards, slightly beating the SFT+ model that was handed the ground-truth derivation.</p>
 
 <div class="table-wrap">
 <table>
@@ -138,7 +140,7 @@
 
 <h2>Result 3: "spurious rewards" are a story about the prompt set</h2>
 
-<p>An odd result has been floating around: training with random rewards improves math benchmarks, at least for Qwen models. It has been read as evidence that post-training gains are somewhat illusory. We think the missing variable is the prompt distribution.</p>
+<p>An odd result has been floating around: training with random rewards improves math benchmarks, at least for Qwen models (see <a href="https://rethink-rlvr.notion.site/Spurious-Rewards-Rethinking-Training-Signals-in-RLVR-1f4df34dac1880948858f95aeb88872f">here</a>). It has been read as evidence that post-training gains are somewhat illusory. We think the missing variable is the prompt distribution.</p>
 
 <p>Reward the model at random and you reward whatever it samples most often. On a <em>narrow</em> prompt set where the base model is already good, that means reinforcing its own correct answers &mdash; entropy falls, the distribution sharpens, and benchmarks can go up. On a <em>broad</em> prompt set, random rewards reinforce everything equally, entropy rises, and the model drifts toward uniform.</p>
 
@@ -162,7 +164,7 @@
   <li>Before running RL, check whether your model ever produces the target behavior. If it does not, sparse rewards will do nothing, and no amount of algorithm tuning will change that.</li>
   <li>The pass@k ceiling is a property of binary rewards, not of RL. A dense, accurate reward can teach behaviors with vanishing support in the base model.</li>
   <li>Dense proxies inherit the usual reward-shaping risk &mdash; optimize the proxy hard enough and you stop optimizing the thing you cared about.</li>
-  <li>The prompt distribution decides both the scope of degradation and whether it happens at all. Report it. Contradictory results in this literature often differ only there.</li>
+  <li>For random rewards, the prompt distribution decides both the scope of degradation and whether it happens at all. Report it. Contradictory results in this literature often differ only there.</li>
 </ul>
 
 <p>The paper has the full experimental detail, a literature review in Appendix B, and the PRM setup in Appendix D.</p>
